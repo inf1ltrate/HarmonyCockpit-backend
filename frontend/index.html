@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>鸿蒙智行车主端</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- HOME -->
+        <div class="page-section active" id="page-home">
+            <div class="car-display">
+                <div class="car-name" id="homeCarName">-</div>
+                <div class="car-brand" id="homeCarBrand">-</div>
+            </div>
+            <div class="mileage">
+                <div><span class="mileage-value" id="homeMileage">-</span><span class="mileage-unit">km</span></div>
+                <div class="mileage-label">可续航</div>
+                <div class="progress-bar"><div class="progress-fill" id="homeProgress" style="width:0%"></div></div>
+                <div class="progress-text"><span id="homePercent">0</span>%</div>
+                <div class="update-time" id="homeUpdateTime">更新于 --</div>
+            </div>
+            <div class="car-image" id="homeCarImage"><div class="car-placeholder">🚗</div></div>
+            <div class="stats-row">
+                <div class="stat-card"><div class="stat-label">功率</div><div><span class="stat-value" id="homePower">-</span><span class="stat-unit">kW</span></div></div>
+                <div class="stat-card"><div class="stat-label">电池</div><div><span class="stat-value" id="homeBattery">-</span><span class="stat-unit">kWh</span></div></div>
+                <div class="stat-card"><div class="stat-label">扭矩</div><div><span class="stat-value" id="homeTorque">-</span><span class="stat-unit">N·m</span></div></div>
+            </div>
+            <div class="card">
+                <div class="card-title"><span class="icon">🌡️</span> 智能空调</div>
+                <div class="ac-controls">
+                    <div class="ac-temp-row">
+                        <button class="ac-temp-btn">−</button>
+                        <div class="ac-temp-value"><span id="acTempVal">25</span><span class="unit">°C</span></div>
+                        <button class="ac-temp-btn">+</button>
+                    </div>
+                    <div class="toggle-row">
+                        <div class="toggle-btn" data-key="rec">
+                            <span class="toggle-icon">🔄</span>空气循环
+                        </div>
+                        <div class="toggle-btn" data-key="ac_on">
+                            <span class="toggle-icon">❄️</span>制冷模式
+                        </div>
+                        <div class="toggle-btn" data-key="fog">
+                            <span class="toggle-icon">🌫️</span>除雾
+                        </div>
+                    </div>
+                    <button class="ac-btn off" id="acOnBtn">开启空调</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTROL -->
+        <div class="page-section" id="page-control">
+            <div class="page-title"><span>车辆控制</span><span class="info-icon" onclick="showOpHistory()">ℹ️</span></div>
+            <div class="car-display">
+                <div class="car-name" id="ctrlCarName">-</div>
+                <div class="car-brand" id="ctrlCarBrand">-</div>
+                <div class="car-image" id="ctrlCarImage"><div class="car-placeholder">🚗</div></div>
+            </div>
+            <div class="card">
+                <div class="card-title"><span class="icon">🌡️</span> 智能空调</div>
+                <div class="ac-controls">
+                    <div class="ac-temp-row">
+                        <button class="ac-temp-btn">−</button>
+                        <div class="ac-temp-value"><span id="ctrlAcTemp">25</span><span class="unit">°C</span></div>
+                        <button class="ac-temp-btn">+</button>
+                    </div>
+                    <div class="toggle-row">
+                        <div class="toggle-btn" data-key="rec">
+                            <span class="toggle-icon">🔄</span>空气循环
+                        </div>
+                        <div class="toggle-btn" data-key="ac_on">
+                            <span class="toggle-icon">❄️</span>制冷模式
+                        </div>
+                        <div class="toggle-btn" data-key="fog">
+                            <span class="toggle-icon">🌫️</span>除雾
+                        </div>
+                    </div>
+                    <button class="ac-btn off" id="ctrlAcOnBtn">开启空调</button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title"><span class="icon">🚪</span> 车门与灯光</div>
+                <div class="toggle-row" style="grid-template-columns:1fr 1fr;">
+                    <div class="toggle-btn" data-key="door">
+                        <span class="toggle-icon">🚪</span>车门
+                    </div>
+                    <div class="toggle-btn" data-key="light">
+                        <span class="toggle-icon">💡</span>灯光
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title"><span class="icon">🚗</span> 车辆移动</div>
+                <div class="dpad-container">
+                    <div class="dpad-outer">
+                        <div class="dpad-btn dpad-up">▲</div>
+                        <div class="dpad-btn dpad-down">▼</div>
+                        <div class="dpad-btn dpad-left">◀</div>
+                        <div class="dpad-btn dpad-right">▶</div>
+                        <div class="dpad-center" id="dpadParkBtn">
+                            <span class="dpad-park-icon">⏹</span>
+                            <span class="dpad-park-text">停车</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATS -->
+        <div class="page-section" id="page-stats">
+            <div class="page-title">数据统计</div>
+            <div class="card" style="margin-top:16px;">
+                <div class="card-title"><span class="icon">📊</span> 近7日行驶里程 (km)</div>
+                <div style="position:relative;height:220px;" id="chartContainer"><div class="loading"></div></div>
+            </div>
+            <div class="stats-row">
+                <div class="stat-card"><div class="stat-label">本周总里程</div><div><span class="stat-value" id="totalMiles">-</span><span class="stat-unit">km</span></div></div>
+                <div class="stat-card"><div class="stat-label">日均里程</div><div><span class="stat-value" id="avgMiles">-</span><span class="stat-unit">km</span></div></div>
+                <div class="stat-card"><div class="stat-label">最长单日</div><div><span class="stat-value" id="maxMiles">-</span><span class="stat-unit">km</span></div></div>
+            </div>
+        </div>
+
+        <!-- PROFILE -->
+        <div class="page-section" id="page-profile">
+            <div class="page-title">我的</div>
+            <div class="profile-header" onclick="showProfileEdit()" style="cursor:pointer;">
+                <div class="profile-avatar" id="profileAvatar">-</div>
+                <div class="profile-name" id="profileName">-</div>
+                <div class="profile-id" id="profileUserId">ID: -</div>
+                <div class="profile-edit-hint">点击编辑</div>
+            </div>
+            <div class="card" style="margin-top:16px;"><div class="menu-item" onclick="showBindCar()"><span class="menu-icon">🚗</span><span class="menu-text">绑定车辆</span><span class="menu-arrow">›</span></div></div>
+            <div class="card"><div class="menu-item" onclick="showFeedbackList()"><span class="menu-icon">💬</span><span class="menu-text">我的反馈</span><span class="menu-arrow">›</span></div></div>
+            <div class="card"><div class="menu-item" onclick="showSettings()"><span class="menu-icon">⚙️</span><span class="menu-text">设置</span><span class="menu-arrow">›</span></div></div>
+            <div class="card" style="margin-bottom:90px;"><div class="menu-item" onclick="logoutUser()"><span class="menu-icon">🚪</span><span class="menu-text" style="color:#EF5350;">退出登录</span><span class="menu-arrow">›</span></div></div>
+        </div>
+
+        <!-- SUB PAGES -->
+        <div class="page-section" id="page-profile-edit">
+            <div class="page-header"><span class="back-btn" onclick="goBack('page-profile')">‹</span><span class="page-title-text">个人信息</span><span class="back-btn-placeholder"></span></div>
+            <div class="profile-form-page">
+                <div class="form-group"><label class="form-label">姓名</label><input type="text" class="form-input" id="editName"></div>
+                <div class="form-group"><label class="form-label">性别</label><select class="form-input" id="editSex"><option value="男">男</option><option value="女">女</option></select></div>
+                <div class="form-group"><label class="form-label">出生日期</label><input type="date" class="form-input" id="editBirthdate"></div>
+                <div class="form-group"><label class="form-label">新密码（留空不修改）</label><input type="password" class="form-input" id="editPassword"></div>
+                <button class="save-btn" onclick="doUpdateProfile()">保存修改</button>
+            </div>
+        </div>
+        <div class="page-section" id="page-feedback-list">
+            <div class="page-header"><span class="back-btn" onclick="goBack('page-profile')">‹</span><span class="page-title-text">我的反馈</span><span class="back-btn-placeholder"></span></div>
+            <div class="feedback-list-page" id="feedbackListPage"><div class="loading"></div></div>
+            <button class="add-feedback-btn" onclick="showAddFeedback()">+</button>
+        </div>
+        <div class="page-section" id="page-bind-car">
+            <div class="page-header"><span class="back-btn" onclick="goBack('page-profile')">‹</span><span class="page-title-text">绑定车辆</span><span class="back-btn-placeholder"></span></div>
+            <div class="card" style="margin-top:16px;"><div class="form-group"><label class="form-label">车辆识别代码（车架号/VIN）</label><input type="text" class="form-input" placeholder="请输入您的车辆识别代号"></div><button class="save-btn">下一步</button></div>
+        </div>
+        <div class="page-section" id="page-settings">
+            <div class="page-header"><span class="back-btn" onclick="goBack('page-profile')">‹</span><span class="page-title-text">设置</span><span class="back-btn-placeholder"></span></div>
+            <div class="card" style="margin-top:16px;"><div class="menu-item"><span class="menu-text">关于</span><span class="menu-arrow">›</span></div><div class="menu-item"><span class="menu-text">隐私政策</span><span class="menu-arrow">›</span></div><div class="menu-item"><span class="menu-text">用户协议</span><span class="menu-arrow">›</span></div></div>
+        </div>
+        <div class="page-section" id="page-op-history">
+            <div class="page-header"><span class="back-btn" onclick="goBack('page-control')">‹</span><span class="page-title-text">操作记录</span><span class="back-btn-placeholder"></span></div>
+            <div class="feedback-list-page" id="opHistoryList"><div class="loading"></div></div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" data-page="page-home" onclick="switchPage('page-home')"><span class="nav-icon">🏠</span><span>首页</span></div>
+        <div class="nav-item" data-page="page-control" onclick="switchPage('page-control')"><span class="nav-icon">🎛️</span><span>车辆控制</span></div>
+        <div class="nav-item" data-page="page-stats" onclick="switchPage('page-stats')"><span class="nav-icon">📊</span><span>数据统计</span></div>
+        <div class="nav-item" data-page="page-profile" onclick="switchPage('page-profile')"><span class="nav-icon">👤</span><span>我的</span></div>
+    </div>
+
+    <script src="utils.js"></script>
+    <script>
+    if (!requireAuth()) {};
+    const user = getCurrentUser();
+
+    const CAR_IMG = { 'M7':'images/car-m7.png', 'S7':'images/car-s7.png', 'S800':'images/car-s800.png' };
+    const CTRL_NAMES = { ac_on:'A/C', rec:'内循环', fog:'除雾', fan:'风扇', door:'车门', light:'灯光', move:'前进', left1:'左转', right1:'右转', back:'后退', stop1:'停车' };
+    const MOVE_KEYS = ['move','back','left1','right1','stop1'];
+    const ALL_KEYS = ['ac_on','ac_temp','fan','rec','fog','light','door','stop1','left1','right1','move','back'];
+
+    let car = null, state = null, pageHist = [];
+
+    function nowStr() {
+        const d = new Date();
+        return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+' '+
+            String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+
+            String(d.getSeconds()).padStart(2,'0')+'.'+String(d.getMilliseconds()).padStart(3,'0');
+    }
+
+    // ---- Navigation ----
+    function switchPage(id) {
+        document.querySelectorAll('.page-section').forEach(p=>p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.bottom-nav .nav-item').forEach(n=>n.classList.toggle('active',n.dataset.page===id));
+        if(id==='page-home') loadHome();
+        else if(id==='page-control') loadControl();
+        else if(id==='page-stats') loadStats();
+        else if(id==='page-profile') loadProfile();
+    }
+    function showPage(id,from){ if(from) pageHist.push(from); document.querySelectorAll('.page-section').forEach(p=>p.classList.remove('active')); document.getElementById(id).classList.add('active'); document.querySelectorAll('.bottom-nav .nav-item').forEach(n=>n.classList.remove('active')); }
+    function goBack(target){ if(pageHist.length) pageHist.pop(); switchPage(target); }
+    function showProfileEdit(){ showPage('page-profile-edit','page-profile'); loadProfileEdit(); }
+    function showFeedbackList(){ showPage('page-feedback-list','page-profile'); loadFbPage(); }
+    function showBindCar(){ showPage('page-bind-car','page-profile'); }
+    function showSettings(){ showPage('page-settings','page-profile'); }
+    function showOpHistory(){ showPage('page-op-history','page-control'); loadOpHistory(); }
+
+    // ---- Car Load ----
+    async function loadCar() {
+        try {
+            const d = await apiGet('/infos',{page:1,pageSize:20,user_id:user.user_id});
+            const list = d.data.list||d.data||[];
+            const t = list.find(c=>['M7','S7','S800'].includes(c.carName));
+            if(!t){ showToast('暂无车型','error'); return; }
+            car = t;
+            document.getElementById('homeCarName').textContent = car.carName;
+            document.getElementById('homeCarBrand').textContent = car.brand;
+            document.getElementById('ctrlCarName').textContent = car.carName;
+            document.getElementById('ctrlCarBrand').textContent = car.brand;
+            document.getElementById('homePower').textContent = car.power||'-';
+            document.getElementById('homeBattery').textContent = car.battery||'-';
+            document.getElementById('homeTorque').textContent = car.torque||'-';
+            document.getElementById('homeMileage').textContent = car.miles||'-';
+            const img = CAR_IMG[car.carName];
+            const html = img ? `<img src="${img}" alt="${car.carName}">` : '<div class="car-placeholder">🚗</div>';
+            document.getElementById('homeCarImage').innerHTML = html;
+            document.getElementById('ctrlCarImage').innerHTML = html;
+        } catch(e){}
+    }
+
+    // ---- State Loading ----
+    async function loadHome() {
+        if(!car) return;
+        try {
+            if(!state){
+                const d = await apiGet('/states/latest',{user_id:user.user_id,car_id:car.car_id});
+                state = d.data||null;
+            }
+            const pct = Math.round((car.battery||50)/120*100);
+            document.getElementById('homeProgress').style.width = pct+'%';
+            document.getElementById('homePercent').textContent = pct;
+            document.getElementById('homeUpdateTime').textContent = '更新于 '+formatDate(new Date().toISOString());
+            if(state){ refreshUI(state); }
+        } catch(e){}
+    }
+
+    async function loadControl() {
+        if(!car) return;
+        if(!state){
+            try {
+                const d = await apiGet('/states/latest',{user_id:user.user_id,car_id:car.car_id});
+                state = d.data||null;
+            } catch(e){}
+        }
+        if(state){ refreshUI(state); }
+    }
+
+    function updateACUI(s) {
+        document.getElementById('acOnBtn').textContent = s.ac_on==='1'?'关闭空调':'开启空调';
+        document.getElementById('acOnBtn').className = 'ac-btn '+(s.ac_on==='1'?'on':'off');
+        document.getElementById('acTempVal').textContent = s.ac_temp||25;
+        document.querySelectorAll('#page-home .toggle-btn[data-key]').forEach(el=>{
+            el.classList.toggle('active', s[el.dataset.key]==='1');
+        });
+    }
+
+    function refreshUI(s) {
+        updateACUI(s);
+        document.getElementById('ctrlAcTemp').textContent = s.ac_temp||25;
+        const btn = document.getElementById('ctrlAcOnBtn');
+        if(btn){ btn.textContent = s.ac_on==='1'?'关闭空调':'开启空调'; btn.className = 'ac-btn '+(s.ac_on==='1'?'on':'off'); }
+        document.querySelectorAll('.toggle-btn[data-key]').forEach(el=>{
+            el.classList.toggle('active', s[el.dataset.key]==='1');
+        });
+        document.getElementById('dpadParkBtn').classList.toggle('active', s.stop1==='1');
+        document.querySelectorAll('.dpad-btn:not(.dpad-center)').forEach(b=>b.classList.toggle('disabled', s.stop1==='1'));
+    }
+
+    // ---- Control Actions ----
+    function toggleAC() {
+        const cur = state||{};
+        const nv = cur.ac_on==='1'?'0':'1';
+        updateUIForKey('ac_on',nv);
+        sendState({ac_on:nv});
+    }
+
+    function toggleState(el, key) {
+        const cur = state||{};
+        const nv = cur[key]==='1'?'0':'1';
+        el.classList.toggle('active', nv==='1');
+        void el.offsetWidth; // force reflow
+        if(key==='ac_on'){
+            document.getElementById('acOnBtn').textContent = nv==='1'?'关闭空调':'开启空调';
+            document.getElementById('acOnBtn').className = 'ac-btn '+(nv==='1'?'on':'off');
+            document.getElementById('ctrlAcOnBtn').textContent = nv==='1'?'关闭空调':'开启空调';
+            document.getElementById('ctrlAcOnBtn').className = 'ac-btn '+(nv==='1'?'on':'off');
+        }
+        if(key==='stop1'){
+            document.getElementById('dpadParkBtn').classList.toggle('active', nv==='1');
+            document.querySelectorAll('.dpad-btn:not(.dpad-center)').forEach(b=>b.classList.toggle('disabled', nv==='1'));
+        }
+        sendState(key==='stop1'?{stop1:nv,move:'0',back:'0',left1:'0',right1:'0'}:{[key]:nv});
+    }
+
+    function togglePark() {
+        const cur = state||{};
+        const nv = cur.stop1==='1'?'0':'1';
+        document.getElementById('dpadParkBtn').classList.toggle('active', nv==='1');
+        document.querySelectorAll('.dpad-btn:not(.dpad-center)').forEach(b=>b.classList.toggle('disabled', nv==='1'));
+        sendState(nv==='1'?{stop1:'1',move:'0',back:'0',left1:'0',right1:'0'}:{stop1:'0'});
+    }
+
+    function adjustTemp(delta) {
+        const cur = state||{};
+        let t = parseFloat(cur.ac_temp||25)+delta;
+        t = Math.max(16,Math.min(32,t));
+        document.getElementById('acTempVal').textContent = t;
+        document.getElementById('ctrlAcTemp').textContent = t;
+        sendState({ac_temp:t});
+    }
+
+    function doMove(key,val) {
+        const cur = state||{};
+        if(cur.stop1==='1') return;
+        sendState({[key]:val,move:val==='1'?'1':'0',stop1:'0',back:val==='1'&&key==='back'?'1':'0',left1:val==='1'&&key==='left1'?'1':'0',right1:val==='1'&&key==='right1'?'1':'0'});
+        if(val==='1'){
+            setTimeout(()=>{ sendState({[key]:'0'}); }, 500);
+        }
+    }
+
+    function updateUIForKey(key,nv) {
+        document.querySelectorAll(`.toggle-btn[data-key="${key}"]`).forEach(el=>{
+            el.classList.toggle('active',nv==='1');
+            void el.offsetWidth;
+        });
+        if(key==='ac_on'){
+            const a = document.getElementById('acOnBtn');
+            const b = document.getElementById('ctrlAcOnBtn');
+            if(a){ a.textContent = nv==='1'?'关闭空调':'开启空调'; a.className = 'ac-btn '+(nv==='1'?'on':'off'); void a.offsetWidth; }
+            if(b){ b.textContent = nv==='1'?'关闭空调':'开启空调'; b.className = 'ac-btn '+(nv==='1'?'on':'off'); void b.offsetWidth; }
+        }
+        if(key==='stop1'){
+            document.getElementById('dpadParkBtn').classList.toggle('active',nv==='1');
+            document.querySelectorAll('.dpad-btn:not(.dpad-center)').forEach(b=>b.classList.toggle('disabled',nv==='1'));
+        }
+    }
+
+    let _sending = false;
+    async function sendState(updates) {
+        if(!car) return;
+        if(_sending) return;
+        _sending = true;
+        const cur = state||{ac_on:'0',ac_temp:25,fan:'0',rec:'0',fog:'0',light:'0',door:'0',stop1:'0',left1:'0',right1:'0',move:'0',back:'0'};
+        const body = {...cur,...updates,user_ID:user.user_id,car_ID:car.car_id,time:nowStr()};
+        try {
+            await apiPost('/states',body);
+            state = {...cur,...updates};
+            // Force sync both pages' temperature and UI
+            document.getElementById('acTempVal').textContent = state.ac_temp||25;
+            document.getElementById('ctrlAcTemp').textContent = state.ac_temp||25;
+            refreshUI(state);
+        } catch(e){ showToast('操作失败','error'); }
+        _sending = false;
+    }
+
+    // ---- Stats ----
+    async function loadStats() {
+        if(!car) return;
+        try {
+            const d = await apiGet('/states/stats/miles',{user_id:user.user_id,car_id:car.car_id});
+            const list = d.data||[];
+            const container = document.getElementById('chartContainer');
+            if(!list.length){ container.innerHTML='<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-text">暂无数据</div></div>'; return; }
+            const vals = list.map(d=>d.miles||0);
+            const total = vals.reduce((s,v)=>s+v,0);
+            const maxVal = Math.max(...vals);
+            document.getElementById('totalMiles').textContent = total;
+            document.getElementById('avgMiles').textContent = Math.round(total/vals.length);
+            document.getElementById('maxMiles').textContent = maxVal;
+
+            const W=340,H=200,pad={top:20,right:20,bottom:30,left:30},cw=W-pad.left-pad.right,ch=H-pad.top-pad.bottom;
+            const pts = vals.map((v,i)=>({x:pad.left+(i/(vals.length-1))*cw, y:pad.top+ch-(maxVal?(v/maxVal)*ch:0)}));
+            const poly = pts.map(p=>`${p.x},${p.y}`).join(' ');
+            const fill = `M${pts[0].x},${pad.top+ch} L${poly} L${pts[vals.length-1].x},${pad.top+ch} Z`;
+
+            container.innerHTML = `<svg width="${W}" height="${H}"><defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4FC3F7" stop-opacity="0.3"/><stop offset="100%" stop-color="#4FC3F7" stop-opacity="0.02"/></linearGradient></defs>
+                ${[0,.25,.5,.75,1].map(r=>{const y=pad.top+ch-r*ch;return`<line x1="${pad.left}" y1="${y+.5}" x2="${pad.left+cw}" y2="${y+.5}" stroke="#E0E8EC" stroke-width="1"/><text x="${pad.left-6}" y="${y+4}" text-anchor="end" font-size="10" fill="#9BB8C2">${Math.round(r*maxVal)}</text>`;}).join('')}
+                <path d="${fill}" fill="url(#lg)"/>
+                <polyline points="${poly}" fill="none" stroke="#4FC3F7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                ${pts.map((p,i)=>`<circle cx="${p.x}" cy="${p.y}" r="5" fill="#fff" stroke="#4FC3F7" stroke-width="2.5"/><text x="${p.x}" y="${p.y-10}" text-anchor="middle" font-size="11" font-weight="600" fill="#333">${vals[i]}</text>`).join('')}
+                ${list.map((d,i)=>{const x=pad.left+(i/(vals.length-1))*cw;return`<text x="${x}" y="${pad.top+ch+18}" text-anchor="middle" font-size="10" fill="#9BB8C2">${formatDateShort(d.date)}</text>`;}).join('')}
+            </svg>`;
+        } catch(e){ container.innerHTML='<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">加载失败</div></div>'; }
+    }
+
+    // ---- Profile ----
+    async function loadProfile() {
+        try {
+            const d = await apiGet('/users/'+user.user_id);
+            document.getElementById('profileAvatar').textContent = d.data.userName.charAt(0);
+            document.getElementById('profileName').textContent = d.data.userName;
+            document.getElementById('profileUserId').textContent = 'ID: '+d.data.user_id;
+        } catch(e){}
+    }
+    async function loadProfileEdit() {
+        try {
+            const d = await apiGet('/users/'+user.user_id);
+            document.getElementById('editName').value = d.data.userName;
+            document.getElementById('editSex').value = d.data.Sex;
+            document.getElementById('editBirthdate').value = d.data.Birthdate;
+            document.getElementById('editPassword').value = '';
+        } catch(e){}
+    }
+    async function doUpdateProfile() {
+        const nm = document.getElementById('editName').value.trim();
+        const sx = document.getElementById('editSex').value;
+        const bd = document.getElementById('editBirthdate').value;
+        const pw = document.getElementById('editPassword').value;
+        if(!nm||!sx||!bd){ showToast('请填写完整','error'); return; }
+        try {
+            await apiPut('/users/'+user.user_id,{userName:nm,Sex:sx,Birthdate:bd,password:pw||undefined});
+            showToast('更新成功','success');
+            await loadProfile();
+            setCurrentUser({...user,userName:nm,Sex:sx,Birthdate:bd});
+            goBack('page-profile');
+        } catch(e){}
+    }
+
+    // ---- Feedbacks ----
+    async function loadFbPage() {
+        const c = document.getElementById('feedbackListPage');
+        c.innerHTML = '<div class="loading"></div>';
+        try {
+            const d = await apiGet('/feedbacks',{page:1,pageSize:10});
+            const list = d.data.list||d.data||[];
+            if(!list.length){ c.innerHTML = '<div class="empty-state"><div class="empty-icon">💬</div><div class="empty-text">暂无反馈</div></div>'; return; }
+            c.innerHTML = list.map(f=>`<div class="feedback-card"><div class="feedback-header"><span class="feedback-id">${f.idea_id}</span><span class="feedback-time">${formatDate(f.time)}</span></div><div class="feedback-title">${f.ideaName}</div><div class="feedback-content">${f.content}</div></div>`).join('');
+        } catch(e){ c.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">加载失败</div></div>'; }
+    }
+    function showAddFeedback() {
+        const o = document.createElement('div');
+        o.className = 'modal-overlay';
+        o.onclick = e=>{ if(e.target===o) o.remove(); };
+        o.innerHTML = `<div class="modal"><div class="modal-title">新增意见反馈</div><div class="form-group"><label class="form-label">反馈标题</label><input type="text" class="form-input" id="fbIdeaName"></div><div class="form-group"><label class="form-label">反馈内容</label><textarea class="form-input" id="fbContent" style="min-height:100px;"></textarea></div><button class="save-btn" onclick="submitFb()">提交反馈</button></div>`;
+        document.body.appendChild(o);
+    }
+    async function submitFb() {
+        const nm = document.getElementById('fbIdeaName').value.trim();
+        const ct = document.getElementById('fbContent').value.trim();
+        if(!nm||!ct){ showToast('请填写完整','error'); return; }
+        try {
+            await apiPost('/feedbacks',{idea_id:'I'+Date.now().toString(36).toUpperCase().slice(-5),ideaName:nm,content:ct,user_id:user.user_id});
+            showToast('提交成功','success');
+            document.querySelector('.modal-overlay').remove();
+            loadFbPage();
+        } catch(e){}
+    }
+
+    // ---- Op History ----
+    function ctrlAction(key,fromV,toV) {
+        const n = CTRL_NAMES[key]; if(!n) return null;
+        if(key==='rec') return toV==='1'?'切换到内循环':'切换到外循环';
+        if(MOVE_KEYS.includes(key)) return toV==='1'?n:'停止'+n;
+        return toV==='1'?'打开'+n:'关闭'+n;
+    }
+    async function loadOpHistory() {
+        const c = document.getElementById('opHistoryList');
+        c.innerHTML = '<div class="loading"></div>';
+        if(!car){ c.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">请先加载车辆</div></div>'; return; }
+        try {
+            const d = await apiGet('/states',{page:1,pageSize:50,user_id:user.user_id,car_id:car.car_id});
+            const list = (d.data.list||d.data||[]);
+            if(list.length<2){ c.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">暂无操作记录</div></div>'; return; }
+            const sorted = [...list].reverse();
+            const entries = [];
+            for(let i=1;i<sorted.length;i++){
+                const prev = sorted[i-1], curr = sorted[i];
+                for(const k of ALL_KEYS){
+                    if(curr[k]!==prev[k]){
+                        const act = ctrlAction(k,prev[k],curr[k]);
+                        if(act) entries.push({userName:curr.userName||user.userName,carName:curr.carName||car.carName,action:act,time:curr.time});
+                    }
+                }
+            }
+            entries.reverse();
+            c.innerHTML = entries.length===0 ? '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">暂无操作记录</div></div>' :
+                entries.slice(0,30).map(e=>`<div class="feedback-card"><div class="feedback-header"><span class="feedback-id">${e.action}</span><span class="feedback-time">${formatDate(e.time)}</span></div><div class="feedback-content">用户${e.userName}控制车辆${e.carName}进行了${e.action}操作</div></div>`).join('');
+        } catch(e){ c.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">加载失败</div></div>'; }
+    }
+
+    // ---- Init ----
+    (async function init() {
+        await loadCar();
+        await loadHome();
+        await loadProfile();
+        bindEvents();
+    })();
+
+    function bindEvents() {
+        // All toggle buttons (AC, doors, lights, fan, fog, rec)
+        document.querySelectorAll('.toggle-btn[data-key]').forEach(el => {
+            el.addEventListener('click', function(e) {
+                const btn = this.closest('.toggle-btn[data-key]') || this;
+                const key = btn.dataset.key;
+                if(!key) return;
+                toggleState(btn, key);
+            });
+        });
+        // Big AC on/off buttons
+        document.querySelectorAll('#acOnBtn, #ctrlAcOnBtn').forEach(el => {
+            el.addEventListener('click', function() {
+                toggleAC();
+            });
+        });
+        // Parking button
+        const parkBtn = document.getElementById('dpadParkBtn');
+        if(parkBtn) {
+            parkBtn.addEventListener('click', function() {
+                togglePark();
+            });
+        }
+        // D-pad direction buttons
+        document.querySelectorAll('.dpad-btn:not(.dpad-center)').forEach(el => {
+            const key = el.classList.contains('dpad-up') ? 'move' :
+                        el.classList.contains('dpad-down') ? 'back' :
+                        el.classList.contains('dpad-left') ? 'left1' : 'right1';
+            el.addEventListener('mousedown', () => { doMove(key, '1'); });
+            el.addEventListener('mouseup', () => { doMove(key, '0'); });
+            el.addEventListener('touchstart', e => { e.preventDefault(); doMove(key, '1'); });
+            el.addEventListener('touchend', () => { doMove(key, '0'); });
+        });
+        // Temperature buttons
+        document.querySelectorAll('.ac-temp-btn').forEach(el => {
+            const text = el.textContent.trim();
+            const delta = text === '−' || text === '-' ? -1 : 1;
+            el.addEventListener('click', () => {
+                adjustTemp(delta);
+            });
+        });
+    }
+    </script>
+</body>
+</html>

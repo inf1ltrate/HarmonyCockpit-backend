@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>鸿蒙智行车主端</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background: linear-gradient(180deg, #E8F6F8 0%, #D4EEF2 50%, #C2E6EA 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+        }
+        .login-container {
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+        }
+        .login-logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 24px;
+        }
+        .login-logo svg {
+            width: 100%;
+            height: 100%;
+        }
+        .login-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0D47A1;
+            margin-bottom: 6px;
+        }
+        .login-sub {
+            font-size: 13px;
+            color: #5A9FB8;
+            margin-bottom: 32px;
+            letter-spacing: 2px;
+        }
+        .login-form .form-group {
+            text-align: left;
+            margin-bottom: 16px;
+        }
+        .login-form .form-label {
+            font-size: 13px;
+            color: #6A9FB8;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .login-form .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255,255,255,0.85);
+            border: 1px solid rgba(106,159,184,0.25);
+            border-radius: 14px;
+            font-size: 15px;
+            color: #333;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .login-form .form-input:focus {
+            border-color: #4FC3F7;
+            box-shadow: 0 0 0 3px rgba(79,195,247,0.1);
+        }
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #4FC3F7, #29B6F6);
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            letter-spacing: 2px;
+            box-shadow: 0 6px 20px rgba(41,182,246,0.4);
+            transition: all 0.2s;
+        }
+        .login-btn:hover {
+            box-shadow: 0 8px 24px rgba(41,182,246,0.5);
+            transform: translateY(-1px);
+        }
+        .demo-accounts {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(106,159,184,0.15);
+        }
+        .demo-title {
+            font-size: 11px;
+            color: #9BB8C2;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        .demo-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 6px;
+        }
+        .demo-item:hover {
+            background: rgba(255,255,255,0.8);
+        }
+        .demo-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4FC3F7, #29B6F6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #fff;
+            font-weight: 600;
+        }
+        .demo-name {
+            font-size: 13px;
+            color: #333;
+        }
+        .demo-id {
+            font-size: 11px;
+            color: #9BB8C2;
+            margin-left: auto;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-logo">
+            <img src="images/hima-logo.png" alt="HIMA" style="width:100%;height:100%;object-fit:contain;">
+        </div>
+        <div class="login-title">鸿蒙智行</div>
+        <div class="login-sub">车主端 · 登录</div>
+
+        <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label class="form-label">账号</label>
+                <input type="text" class="form-input" id="user_id" placeholder="请输入用户ID" required value="277273737937">
+            </div>
+            <div class="form-group">
+                <label class="form-label">密码</label>
+                <input type="password" class="form-input" id="password" placeholder="请输入密码" required value="12345678">
+            </div>
+            <button type="submit" class="login-btn" id="loginBtn">登录</button>
+        </form>
+
+        <div class="demo-accounts">
+            <div class="demo-title">演示账号</div>
+            <div class="demo-item" onclick="fillDemo('277273737937')">
+                <div class="demo-avatar">王</div>
+                <div class="demo-name">王琦 · 问界M7</div>
+                <div class="demo-id">277273737937</div>
+            </div>
+            <div class="demo-item" onclick="fillDemo('277273737941')">
+                <div class="demo-avatar" style="background:linear-gradient(135deg,#B388FF,#7C4DFF);">石</div>
+                <div class="demo-name">石昊 · 智界S7</div>
+                <div class="demo-id">277273737941</div>
+            </div>
+            <div class="demo-item" onclick="fillDemo('277273737940')">
+                <div class="demo-avatar" style="background:linear-gradient(135deg,#FF8A65,#FF5722);">陈</div>
+                <div class="demo-name">陈平安 · 尊界S800</div>
+                <div class="demo-id">277273737940</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="utils.js"></script>
+    <script>
+        function fillDemo(id) {
+            document.getElementById('user_id').value = id;
+            document.getElementById('password').value = '12345678';
+        }
+        async function handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = true;
+            btn.textContent = '登录中...';
+            try {
+                const data = await apiPost('/users/login', {
+                    user_id: document.getElementById('user_id').value.trim(),
+                    password: document.getElementById('password').value,
+                });
+                setCurrentUser(data.data);
+                showToast('登录成功，欢迎 ' + data.data.userName, 'success');
+                setTimeout(() => { window.location.href = 'index.html'; }, 800);
+            } catch (err) {}
+            finally {
+                btn.disabled = false;
+                btn.textContent = '登录';
+            }
+        }
+        if (getCurrentUser()) { window.location.href = 'index.html'; }
+    </script>
+</body>
+</html>
